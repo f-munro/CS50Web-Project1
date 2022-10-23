@@ -1,0 +1,14 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block body %}
+    {% if content %}
+        {{ content|safe }}
+        <p><small><a href="{% url 'edit' title %}">Edit this page</a></small></p>
+    {% else %}
+        <p><h5>Error: Page Not Found</h5></p>
+    {% endif %}
+{% endblock %}

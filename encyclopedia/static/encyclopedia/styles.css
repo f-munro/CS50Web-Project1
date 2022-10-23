@@ -1,0 +1,58 @@
+body {
+    margin: 0;
+    background-color: white;
+}
+
+code {
+    white-space: pre;
+}
+
+p {
+    padding-top: 10px;
+}
+
+form {
+    max-width: 70%;
+}
+
+h1 {
+    margin-top: 0px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#id_title {
+    width: 100%;
+}
+
+textarea {
+    height: 60vh;
+    width: 100%;
+}
+
+.main {
+    padding: 10px;
+}
+
+.search {
+    width: 100%;
+    font-size: 15px;
+    line-height: 15px;
+}
+
+.sidebar {
+    background-color: #f0f0f0;
+    height: 100vh;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-top: 5px;
+}
+
+.errorlist {
+    list-style-type: none;
+    border-left: 5px solid red;
+    padding-left: 10px;
+    margin-top: 30px;
+}
