@@ -13,13 +13,13 @@ from . import util
 class NewForm(forms.Form):
     title = forms.CharField(label='Title', max_length=256)
     content = forms.CharField(label='Content', widget=forms.Textarea)
-
+    
     # Custom form validation that will raise an error if entry already exists
-    def clean(self):
+    def clean_title(self):
         titles = util.list_entries()
-        title = self.cleaned_data.get("title")
+        title = self.cleaned_data['title']
         for i in titles:
-                if title == i:
+                if title.casefold() == i.casefold():
                     raise ValidationError("An entry with that name already exists")
         return title
 
@@ -73,8 +73,8 @@ def create(request):
         form = NewForm(request.POST) # request.POST contains all the submitted data
         if form.is_valid():
         # if valid, this will return True and place data in 'cleaned_data'
-            title = form.cleaned_data["title"]
-            content = form.cleaned_data["content"]
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
             # Save the entry if all is good:
             util.save_entry(title, content)
             return HttpResponseRedirect(reverse('entry', args=(title,)))
