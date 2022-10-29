@@ -1,39 +1,45 @@
-#from lib2to3.pytree import _Results
+import random
 from django import forms
 from django.forms import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django import forms
 import markdown2
-import random
 from . import util
 
 # Form for creating new entries
+
+
 class NewForm(forms.Form):
     title = forms.CharField(label='Title', max_length=256)
     content = forms.CharField(label='Content', widget=forms.Textarea)
-    
+
     # Custom form validation that will raise an error if entry already exists
     def clean_title(self):
         titles = util.list_entries()
         title = self.cleaned_data['title']
         for i in titles:
-                if title.casefold() == i.casefold():
-                    raise ValidationError("An entry with that name already exists")
+            if title.casefold() == i.casefold():
+                raise ValidationError("An entry with that name already exists")
         return title
 
 # Form for editing entries
+
+
 class EditForm(forms.Form):
     content = forms.CharField(label=False, widget=forms.Textarea)
 
 # Index page
+
+
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "titles": util.list_entries()
     })
 
 # Entry page
+
+
 def entry(request, title):
     try:
         content = markdown2.markdown(util.get_entry(title))
@@ -45,12 +51,16 @@ def entry(request, title):
     })
 
 # Random function will redirect to a random entry
+
+
 def random_entry(request):
     entries = util.list_entries()
-    title = entries[random.randint(0, (len(entries)-1))] 
+    title = entries[random.randint(0, (len(entries)-1))]
     return HttpResponseRedirect(reverse('entry', args=(title,)))
 
 # Search page
+
+
 def search(request):
     titles = util.list_entries()
     partial_matches = []
@@ -68,17 +78,20 @@ def search(request):
     })
 
 # Create New page
+
+
 def create(request):
     if request.method == 'POST':
-        form = NewForm(request.POST) # request.POST contains all the submitted data
+        # request.POST contains all the submitted data
+        form = NewForm(request.POST)
         if form.is_valid():
-        # if valid, this will return True and place data in 'cleaned_data'
+            # if valid, this will return True and place data in 'cleaned_data'
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
             # Save the entry if all is good:
             util.save_entry(title, content)
             return HttpResponseRedirect(reverse('entry', args=(title,)))
-        
+
         return render(request, "encyclopedia/create.html", {
             "form": form
         })
@@ -90,19 +103,20 @@ def create(request):
             "form": form
         })
 
+
 def edit(request, title):
     if request.method == 'POST':
         # Get the submitted data and check it's valid
         form = EditForm(request.POST)
         if form.is_valid():
             content = form.cleaned_data["content"]
-            # Save the entry and redirect to its page 
+            # Save the entry and redirect to its page
             util.save_entry(title, content)
             return HttpResponseRedirect(reverse('entry', args=(title,)))
         else:
             return render(request, "encyclopedia/edit.html", {
-            "form": form,
-            "title": title,
+                "form": form,
+                "title": title,
             })
     else:
         # If request is GET, display the pre-populated form
@@ -112,6 +126,6 @@ def edit(request, title):
             return render(request, "encyclopedia/edit.html", {
                 "form": form,
                 "title": title
-                })
+            })
         else:
             return HttpResponseRedirect(reverse('entry', args=(title,)))
